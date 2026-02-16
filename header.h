@@ -1,6 +1,6 @@
 #ifndef guard
 #define guard
-void bit_disp(uint64_t bits);
+void bit_disp(uint64_t arg, uint8_t size);
 uint64_t keyshed(uint16_t n, uint64_t key);
 
 
