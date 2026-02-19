@@ -5,9 +5,9 @@
 void bit_disp(uint64_t arg, uint8_t size){
 	uint8_t bit;
 	uint16_t i = 1;
-	for (uint16_t j = 0; j < (size); j++, i++){
+	for (uint16_t j = size; j > 0; j--, i++){
 		bit = 0;
-		if (arg & (1L<<j)){
+		if (arg & (1L<<(j-1))){
 			bit = 1;
 		}
 		printf("%d",bit);
@@ -19,7 +19,7 @@ void bit_disp(uint64_t arg, uint8_t size){
 	printf("\n");
 }
 
-uint64_t keyshed(uint16_t n, uint64_t key1){
+uint64_t keyshed(uint64_t key1, uint64_t keys[6]){
 	uint32_t pc1[] = {57,49,41,33,25,17,9,
 			1,58,50,42,34,26,18,
 			10,2,59,51,43,35,27,
@@ -62,13 +62,72 @@ uint64_t keyshed(uint16_t n, uint64_t key1){
 			D |= 1L << j;
 		}
 	}
-	D = D >> 4 ; //Bug of sorts
 	printf("\n");
 	bit_disp(C,32);
 	bit_disp(D,32);
+	
+	//First Iteration
+	//1
+	C = C << 1;
+	D = D << 1;
+ 	keys[0] = pc_2(C, D, pc2);
 
+	//2
+	C = C << 1;
+	D = D << 1;
+	keys[1] = pc_2(C, D, pc2);
 
-	return 0;
+	//3
+	C = C << 2;
+	D = D << 2;
+	keys[2] = pc_2(C, D, pc2);
+	
+	//4
+	C = C << 2;
+	D = D << 2;
+	keys[3] = pc_2(C, D, pc2);
+
+	//5
+	C = C << 2;
+	D = D << 2;
+	keys[4] = pc_2(C, D, pc2);
+		
+	
 	
 
+	return 0;
 }
+
+uint64_t pc_2(uint32_t c, uint32_t d, uint32_t pc2[46]){
+	uint64_t key = 0;
+	uint64_t ret_key = 0;
+	for (uint16_t j = 0; j < 28; j++){
+		if (c & (1L << j)){
+			key |= 1L << j;
+		}
+	} 
+
+	for (uint16_t j = 0; j < 28; j++){
+		if (d & (1L << j)){
+			key |= 1L << (j+28);
+		}
+	}
+	printf("\n\nCombined PC 2\n");
+	bit_disp(key, 64); //48 bits
+	for (uint16_t j = 0; j < 48; j++){
+		if ( key & (1L << (*(pc2 + j)-1))){
+			ret_key |= 1L << j;	
+		}
+	}
+	printf("PC_2 Applied \n");
+	bit_disp(ret_key,64);
+	return ret_key;
+}
+
+
+
+
+
+
+
+
