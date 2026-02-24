@@ -12,6 +12,8 @@ int main(){
                         7,62,54,46,38,30,22,
                         14,6,61,53,45,37,29,
                         21,13,5,28,20,12,4};
+
+	//Key Schedule
 	uint64_t keys[6];
 	keyshed(num1, keys);
 	printf("\n\nKeys \n");
@@ -19,6 +21,8 @@ int main(){
 		printf("%d-- ", j+1);
 		bit_disp(keys[j],64);
 	}
+
+
 	//Algo Test	
 	//for ( uint16_t j  = 0; j < 56; j++){
         //                if (num1 & (1L << (pc1[j]-1))){
@@ -28,6 +32,8 @@ int main(){
 	//bit_disp(num1,64);
 	//bit_disp(key,64);
 
-
+	//F Function
+	function(271868789,keys[0]);	
+	
 	return 0;
 }
