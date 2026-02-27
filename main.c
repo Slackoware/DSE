@@ -34,6 +34,30 @@ int main(){
 
 	//F Function
 	function(271868789,keys[0]);	
-	
+	uint64_t r_keys[6];
+	for (uint16_t j = 0, i = 5; j < 6; i--, j++){
+		r_keys[j] = keys[i];
+	}
+	printf("\n\nKeys \n");
+	for (uint8_t j = 0; j < 6; j++){
+		printf("%d-- ", j+1);
+		bit_disp(keys[j],64);
+	}
+
+	printf("\n\nReverse Keys \n");
+	for (uint8_t j = 0; j < 6; j++){
+		printf("%d-- ", j+1);
+		bit_disp(r_keys[j],64);
+	}
+
+	char z = 'z';
+	uint64_t cipher1 = des((uint64_t)z, keys);
+	uint64_t cipher2 = des1(cipher1, r_keys);
+
+	printf("Cipher Test\n");
+	printf("%c \n",z);
+
+	printf("%c\n",cipher1);
+	printf("%c\n",cipher2);
 	return 0;
 }
