@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "header.h"
+
+
 int main(){
-	uint64_t num1 = 25777777;
+	uint64_t num1 = 257777774545444555;
 	uint32_t pc1[] = {57,49,41,33,25,17,9,
                         1,58,50,42,34,26,18,
                         10,2,59,51,43,35,27,
@@ -14,57 +16,37 @@ int main(){
                         21,13,5,28,20,12,4};
 
 	//Key Schedule
-//	uint64_t keys[6];
-//	keyshed(num1, keys);
-//	printf("\n\nKeys \n");
-//	for (uint8_t j = 0; j < 5; j++){
-//		printf("%d-- ", j+1);
-//		bit_disp(keys[j],64);
-//	}
-
-
-	//Algo Test	
-	//for ( uint16_t j  = 0; j < 56; j++){
-        //                if (num1 & (1L << (pc1[j]-1))){
-        //                        key |= 1L << j;
-        //                }
-        //        }
-	//bit_disp(num1,64);
-	//bit_disp(key,64);
+	uint64_t keys[16];
+	key_sched(num1, keys);
 
 	//F Function
-//	uint64_t r_keys[6];
-//	for (uint16_t j = 0, i = 5; j < 6; i--, j++){
-//		r_keys[j] = keys[i];
-//	}
-//	printf("\n\nKeys \n");
-//	for (uint8_t j = 0; j < 6; j++){
+	uint64_t r_keys[16];
+	for (uint16_t j = 0, i = 15; j < 16; i--, j++){
+		r_keys[j] = keys[i];
+	}
+	
+
+	char z = 'z';
+	uint64_t cipher1 = des((uint64_t)z, keys);
+	uint64_t cipher2 = des(cipher1, r_keys);
+
+	printf("Cipher Test\n");
+	printf("%c \n",z);
+	printf("%c\n",cipher1);
+	printf("%c\n",cipher2);
+	
+//    printf("\n\nKeys \n");
+//	for (uint8_t j = 0; j < 16; j++){
 //		printf("%d-- ", j+1);
-//		bit_disp(keys[j],64);
+//		bit_disp(keys[j],48);
 //	}
-//
+
 //	printf("\n\nReverse Keys \n");
-//	for (uint8_t j = 0; j < 6; j++){
+//	for (uint8_t j = 0; j < 16; j++){
 //		printf("%d-- ", j+1);
-//		bit_disp(r_keys[j],64);
+//		bit_disp(r_keys[j],48);
 //	}
-//
-//	char z = 'z';
-//	uint64_t cipher1 = des((uint64_t)z, keys);
-//	uint64_t cipher2 = des1(cipher1, r_keys);
-//
-//	printf("Cipher Test\n");
-//	printf("%c \n",z);
-//
-//	printf("%c\n",cipher1);
-//	printf("%c\n",cipher2);
-
-	uint32_t cipher1 = function(271868789,23333);
-	uint32_t cipher2 = function(cipher1, 23333);
-	printf("Ciphered %Ld and Decyphered %Ld\n", cipher1,cipher2);
-
-
-
 
 	return 0;
 }
+
