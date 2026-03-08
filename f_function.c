@@ -55,10 +55,9 @@ static char S[8][64] = {{
 
 }};
 
-
 uint32_t function(uint32_t r, uint64_t key){
 
-	uint16_t e[48] = {32,1,2,3,4,5,
+	uint16_t e[48] = {3,1,2,3,4,5,
 			4,5,6,7,8,9,
 			8,9,10,11,12,13,
 			12,13,14,15,16,17,
@@ -69,21 +68,18 @@ uint32_t function(uint32_t r, uint64_t key){
 
 	uint64_t ret_val = 0;
 	for (uint16_t j = 0; j < 48; j++){
-		if ((1L << (e[j]-1)) & r){
+		if ((1L << (e[j]-1)) & r){ 
 			ret_val |= 1l<<j;
 		} 
 	}
-	bit_disp(r,32);
-	bit_disp(ret_val,48);
 	
-	uint64_t tmp = ret_val;
-	ret_val = bit_addition(ret_val, key);
-	printf("\n\nBit Addition\n");
-	bit_disp(tmp,48);
-	bit_disp(key, 48);
-	bit_disp(ret_val,48);
+	//debug
+//	bit_disp(r,32);
+//	bit_disp(ret_val, 48);
+	
+	ret_val = ret_val ^ key;
 
-	//Splitting Added Values
+	//Spliting Added Value
 	uint8_t bitz[8]= {0,0};
 	uint16_t i = 0, b = 0;
 	for (uint16_t j = 0; j < 48; j++, b++){
@@ -91,27 +87,21 @@ uint32_t function(uint32_t r, uint64_t key){
 	        ++i;
 	        b = 0;
 	    }
-
+	    
 	    if ((1L << j)&ret_val){
 	        bitz[i-1] |= 1L << b; 
 	    }
 	}
-
-//	printf("6Bits Seperation\n");
-	printf("\nSplitting \n");
-	for (uint8_t j = 0; j < 8; j++){
-		printf("%d-- ", j+1);
-		bit_disp(bitz[j],6);
-	}
-
+	//Debug
+//	printf("\n6Bits Seperation\n");
+//	for (uint8_t j = 0; j < 8; j++){
+//		printf("%d-- ", j+1);
+//		bit_disp(bitz[j],6);
+//	}
 	
-
 	//S Permutation into 4 bits
-
 	uint16_t first = 0;
-
 	uint16_t second = 0;
-	printf("\n\nPermuted Bitz\n");
 	for (uint16_t j = 0; j < 8; j++){
 	    //For the First index
 	    if (1L & (bitz[j])){
@@ -120,34 +110,32 @@ uint32_t function(uint32_t r, uint64_t key){
 	    if ((1L << 5) & (bitz[j])){
 	        first |= 1L << 1;
 	    }
+	    
 	    //For the second index
 	    uint8_t c = 1;
-
 	    while (c < 5){
 	        if ((1L<<c) & bitz[j]){
 	            second |= 1L << (c-1);
 	        }
 	        ++c;
 	    }
+		//printf("%d-- \n", j+1);
 
-	    printf("%d--", j+1);
-	    bit_disp(first,2);
-	    bit_disp(second, 4);
-	    printf(" %d\n",second);
-
+	    //bit_disp(first, 2);
+	    //bit_disp(second, 4);
 	    bitz[j] = S[j][(first * 16)+(second)];	
 	    first = 0;
 	    second = 0;
+	        
 	    }
 
-	printf("\nPermetued blocks\n");
-	for (uint8_t j = 0; j < 8; j++){
-		printf("%d-- %d ",j+1,bitz[j]);
-		bit_disp(bitz[j],4);
-	}
+	//printf("Permetued blocks\n"); //Debug
+	//for (uint8_t j = 0; j < 8; j++){
+	//	printf("%d-- ",j+1);
+	//	bit_disp(bitz[j],4);
+	//}
 
 	//Combining everything back again
-
 	uint32_t value = 0;
 	uint16_t arr = 0, count = 0;
 	for (uint16_t j = 0; j < 32; j++, count++){
@@ -155,16 +143,15 @@ uint32_t function(uint32_t r, uint64_t key){
 			++arr;
 			count = 0;
 		}
-
+	
 		if ((1L << count) & bitz[arr]){
 			value |= 1L << j;
 		}
-	}
-	printf("\n\nReturn Value Permuted\n");	
-	bit_disp(value, 32);
+	}	
+	//bit_disp(value, 32); //Debug
+
 
 	//Permutate the output
-
 	uint16_t pc[32] = {16,7, 20, 21,
 			29, 12, 28, 17,
 			1, 15, 23, 26,
@@ -173,25 +160,14 @@ uint32_t function(uint32_t r, uint64_t key){
 			32, 27, 3, 9,
 			19, 13, 30, 6,
 			22, 11, 4, 25};
-
 	uint32_t rvalue = 0;
-
 	for ( uint16_t j  = 0; j < 32; j++){
 		if (value & (1L << (pc[j]-1))){
 			rvalue |= 1L << j;
 		}
 	}
-	bit_disp(rvalue,32);
+
+	//bit_disp(rvalue,32); //Debug
 	return rvalue;
 }
 
-uint64_t bit_addition(uint64_t a, uint64_t b){
-	uint64_t carry;
-	while (b != 0){
-		carry = a & b;
-		a = a ^ b;
-		b = carry << 1;
-	}
-	return a;
-	
-}
